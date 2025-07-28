@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { SearchBar } from '@/components/SearchBar';
 import { VirtualizedGrid } from '@/components/VirtualizedGrid';
+import { ParticleBackground } from '@/components/ParticleBackground';
 import { useImageLoader } from '@/hooks/useImageLoader';
 import { FilterState, ImageFile } from '@/types';
 
@@ -58,11 +59,16 @@ export default function Home() {
 
 	if (loading) {
 		return (
-			<div className='min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 flex items-center justify-center'>
-				<motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className='text-center'>
-					<div className='w-16 h-16 border-4 border-blue-400 border-t-transparent rounded-full animate-spin mx-auto mb-4'></div>
-					<h2 className='text-2xl font-semibold text-white'>Loading CDN Assets</h2>
-					<p className='text-white/60 mt-2'>Fetching your images...</p>
+			<div className='min-h-screen bg-black flex items-center justify-center relative overflow-hidden'>
+				<ParticleBackground />
+				<motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className='text-center glass-card rounded-2xl p-12 relative z-10'>
+					<motion.div
+						animate={{ rotate: 360 }}
+						transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+						className='w-20 h-20 border-4 border-white/20 border-t-white rounded-full mx-auto mb-6'
+					/>
+					<h2 className='text-3xl font-bold text-white mb-3 bg-gradient-to-r from-white to-neutral-300 bg-clip-text text-transparent'>Loading CDN Assets</h2>
+					<p className='text-neutral-400 font-mono'>Scanning the cosmos for your images...</p>
 				</motion.div>
 			</div>
 		);
@@ -70,27 +76,51 @@ export default function Home() {
 
 	if (error) {
 		return (
-			<div className='min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 flex items-center justify-center'>
-				<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className='text-center'>
-					<div className='text-6xl mb-4'>⚠️</div>
-					<h2 className='text-2xl font-semibold text-white mb-2'>Error Loading Assets</h2>
-					<p className='text-white/60'>{error}</p>
+			<div className='min-h-screen bg-black flex items-center justify-center relative overflow-hidden'>
+				<ParticleBackground />
+				<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className='text-center glass-card rounded-2xl p-12 relative z-10'>
+					<motion.div
+						animate={{
+							scale: [1, 1.1, 1],
+							rotate: [0, 5, -5, 0],
+						}}
+						transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+						className='text-8xl mb-6'
+					>
+						⚠️
+					</motion.div>
+					<h2 className='text-3xl font-bold text-white mb-4 bg-gradient-to-r from-white to-neutral-300 bg-clip-text text-transparent'>System Error</h2>
+					<p className='text-neutral-400 font-mono'>{error}</p>
 				</motion.div>
 			</div>
 		);
 	}
 
 	return (
-		<div className='min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900'>
-			<div className='container mx-auto px-6 py-8'>
-				<motion.header initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className='text-center mb-8'>
-					<h1 className='text-5xl font-bold text-white mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400'>CDN Assets</h1>
-					<p className='text-xl text-white/80'>Browse and manage your content delivery network assets</p>
-				</motion.header>
+		<div className='min-h-screen bg-black relative overflow-hidden'>
+			<ParticleBackground />
 
-				<SearchBar filters={filters} onFiltersChange={setFilters} totalImages={images.length} filteredCount={filteredAndSortedImages.length} />
+			<div className='relative z-10 w-full h-full'>
+				<div className='mx-auto p-12'>
+					<motion.header initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className='text-center mb-8'>
+						<motion.h1
+							className='text-6xl md:text-8xl font-bold mb-4 bg-gradient-to-r from-white to-neutral-300 bg-clip-text text-transparent'
+							animate={{
+								backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+							}}
+							transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+						>
+							CDN ASSETS
+						</motion.h1>
+						<motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className='text-xl text-neutral-300 font-mono'>
+							Navigate the digital cosmos of your content delivery network
+						</motion.p>
+					</motion.header>
 
-				<VirtualizedGrid images={filteredAndSortedImages} />
+					<SearchBar filters={filters} onFiltersChange={setFilters} totalImages={images.length} filteredCount={filteredAndSortedImages.length} />
+
+					<VirtualizedGrid images={filteredAndSortedImages} />
+				</div>
 			</div>
 		</div>
 	);
